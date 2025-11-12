@@ -3,15 +3,18 @@
   "config": {
     "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
     "connection.url": "jdbc:oracle:thin:@oracledb:1521/XEPDB1",
+    "connection.oracle.jdbc.ReadTimeout": "45000",
     "connection.user": "SYSTEM",
     "connection.password": "MySecurePassword123",
-    "table.whitelist": "SYSTEM.CHANGE_TRACKING",
+    "table.whitelist": "CHANGE_TRACKING",
+    "table.blacklist": "",
+    "schema.pattern": "SYSTEM",
     "mode": "timestamp+incrementing",
-    "incrementing.column.name": "OFFSET_ID",
     "timestamp.column.name": "OFFSET_DATE_TIME",
+    "incrementing.column.name": "ID",
     "topic.prefix": "oracle_events_",
     "poll.interval.ms": 5000,
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": false
   }
