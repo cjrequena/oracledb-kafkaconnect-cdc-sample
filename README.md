@@ -236,6 +236,8 @@ SELECT * FROM CHANGE_TRACKING WHERE TYPE = 'DELETE' AND TABLE_NAME = 'ORDERS' OR
 
 ## Kafka Connect Configuration (JDBC Source)c
 
+**see: [Configuration Reference for JDBC Source Connector](https://docs.confluent.io/kafka-connectors/jdbc/10.9/source-connector/source_config_options.html)**
+
 ### Set oracle-source-connector.json (Save it in ./provision/connectors/oracle-source-connector.json)
 
 ```json
@@ -244,17 +246,23 @@ SELECT * FROM CHANGE_TRACKING WHERE TYPE = 'DELETE' AND TABLE_NAME = 'ORDERS' OR
    "config": {
       "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
       "connection.url": "jdbc:oracle:thin:@oracledb:1521/XEPDB1",
+      "connection.oracle.jdbc.ReadTimeout": "45000",
       "connection.user": "SYSTEM",
       "connection.password": "MySecurePassword123",
       "table.whitelist": "CHANGE_TRACKING",
+      "table.blacklist": "",
+      "schema.pattern": "SYSTEM",
       "mode": "timestamp+incrementing",
       "timestamp.column.name": "OFFSET_DATE_TIME",
       "incrementing.column.name": "ID",
       "topic.prefix": "oracle_events_",
       "poll.interval.ms": 5000,
-      "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+      "key.converter": "org.apache.kafka.connect.json.JsonConverter",
       "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-      "value.converter.schemas.enable": false
+      "value.converter.schemas.enable": false,
+      "topic.creation.enable": true,
+      "topic.creation.default.replication.factor": 3,
+      "topic.creation.default.partitions": 5
    }
 }
 ```
@@ -267,12 +275,12 @@ SELECT * FROM CHANGE_TRACKING WHERE TYPE = 'DELETE' AND TABLE_NAME = 'ORDERS' OR
 
 ### Check status of the connector
 ```bash
-  curl http://localhost:8083/connectors/oracle-source-connector/status
+  curl -s http://localhost:8083/connectors/oracle-source-connector/status | jq
 ```
 
 ### Check what the connector sees
-```batch
-curl -s http://localhost:8083/connectors/oracle-source-connector/config | jq
+```bash
+   curl -s http://localhost:8083/connectors/oracle-source-connector/config | jq
 ```
 
 ### Restart the connector
@@ -305,8 +313,8 @@ curl -X POST http://localhost:8083/connectors/oracle-source-connector/restart
 ```
 
 ### Check Kafka topics
-```batch
-docker exec kafka kafka-topics --bootstrap-server localhost:9092 --list | grep oracle
+```bash
+  docker exec kafka kafka-topics --bootstrap-server localhost:9092 --list | grep oracle
 ```
 ### Delete connector offset topic (this forces the connector to start from scratch):
 ```bash

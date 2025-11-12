@@ -4,6 +4,7 @@
 bin/
 gen/
 target/
+.docker/provision/connectors/confluentinc-kafka-connect-jdbc
 
 ###############
 # Java class files
