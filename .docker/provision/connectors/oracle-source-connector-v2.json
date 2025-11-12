@@ -1,0 +1,27 @@
+{
+  "name": "oracle-source-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:oracle:thin:@oracledb:1521/XEPDB1",
+    "connection.oracle.jdbc.ReadTimeout": "45000",
+    "connection.user": "SYSTEM",
+    "connection.password": "MySecurePassword123",
+
+    "table.include.list": "SYSTEM.CHANGE_TRACKING",
+
+    "mode": "timestamp+incrementing",
+    "timestamp.columns.mapping": "SYSTEM.CHANGE_TRACKING:[OFFSET_DATE_TIME]",
+    "incrementing.column.mapping": "SYSTEM.CHANGE_TRACKING:ID",
+
+    "topic.prefix": "oracle_events_",
+    "poll.interval.ms": "5000",
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+
+    "topic.creation.enable": true,
+    "topic.creation.default.replication.factor": 1,
+    "topic.creation.default.partitions": 1
+  }
+}
