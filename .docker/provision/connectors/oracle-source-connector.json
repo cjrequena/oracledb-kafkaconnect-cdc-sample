@@ -18,7 +18,7 @@
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": false,
     "topic.creation.enable": true,
-    "topic.creation.default.replication.factor": 3,
-    "topic.creation.default.partitions": 5
+    "topic.creation.default.replication.factor": 1,
+    "topic.creation.default.partitions": 1
   }
 }
