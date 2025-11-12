@@ -16,6 +16,9 @@
     "poll.interval.ms": 5000,
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": false
+    "value.converter.schemas.enable": false,
+    "topic.creation.enable": true,
+    "topic.creation.default.replication.factor": 3,
+    "topic.creation.default.partitions": 5
   }
 }
