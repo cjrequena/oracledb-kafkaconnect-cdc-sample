@@ -217,17 +217,36 @@ services:
       - ORACLE_CHARACTERSET=AL32UTF8
     volumes:
       - oracledb_data:/opt/oracle/oradata
+      - $PWD/provision/oracledb/V1.0__init_db.sql:/container-entrypoint-initdb.d/1-schema.sql
+      - $PWD/provision/oracledb/V1.0__init_db.sql:/opt/oracle/scripts/setup/1-schema.sql
     healthcheck:
       test: ["CMD", "bash", "-c", "echo exit | sqlplus -s SYSTEM/MySecurePassword123@XEPDB1 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 60s
+  postgres:
+    image: postgres:${POSTGRES_VERSION}
+    container_name: postgres
+    hostname: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      local-network:
+        ipv4_address: 171.28.1.11
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres-data:/data/postgres
+      - $PWD/provision/postgres/V1.0__init_db.sql:/docker-entrypoint-initdb.d/1-schema.sql
 #---------------------------------------------------------------------------------------------------------------------
 volumes:
   kafka-data:
   kafbat-data:
   oracledb_data:
+  postgres-data:
 #---------------------------------------------------------------------------------------------------------------------
 networks:
   local-network:

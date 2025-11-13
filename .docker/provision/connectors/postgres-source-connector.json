@@ -1,0 +1,28 @@
+{
+  "name": "postgres-source-connector",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
+    "connection.url": "jdbc:postgresql://postgres:5432/postgres",
+    "connection.user": "postgres",
+    "connection.password": "postgres",
+
+    "table.whitelist": "change_tracking",
+    "table.blacklist": "",
+    "schema.pattern": "public",
+
+    "mode": "timestamp+incrementing",
+    "timestamp.column.name": "created_at",
+    "incrementing.column.name": "id",
+
+    "topic.prefix": "postgres_events_",
+    "poll.interval.ms": 5000,
+
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": false,
+
+    "topic.creation.enable": true,
+    "topic.creation.default.replication.factor": 1,
+    "topic.creation.default.partitions": 1
+  }
+}
