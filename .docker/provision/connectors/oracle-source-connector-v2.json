@@ -10,7 +10,7 @@
     "table.include.list": "SYSTEM.CHANGE_TRACKING",
 
     "mode": "timestamp+incrementing",
-    "timestamp.columns.mapping": "SYSTEM.CHANGE_TRACKING:[OFFSET_DATE_TIME]",
+    "timestamp.columns.mapping": "SYSTEM.CHANGE_TRACKING:[CREATED_AT]",
     "incrementing.column.mapping": "SYSTEM.CHANGE_TRACKING:ID",
 
     "topic.prefix": "oracle_events_",

@@ -61,9 +61,12 @@ services:
     hostname: kafka-connect
     container_name: kafka-connect
     depends_on:
-      - kafka
-      - schema-registry
-      - oracledb
+      kafka:
+        condition: service_started
+      schema-registry:
+        condition: service_started
+      oracledb:
+        condition: service_healthy
     networks:
       local-network:
         ipv4_address: 171.28.1.4
@@ -99,11 +102,8 @@ services:
       # Converters for internal topics
       CONNECT_INTERNAL_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-
-      # Monitoring (optional - remove if not using Confluent Control Center)
-      CLASSPATH: /usr/share/java/monitoring-interceptors/monitoring-interceptors-7.9.0.jar
-      CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-      CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+      CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
 
       # Plugin path
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/jars"
@@ -203,7 +203,7 @@ services:
   #---------------------------------------------------------------------------------------------------------------------
   oracledb:
     image: container-registry.oracle.com/database/express:${ORACLE_EXPRESS_VERSION}
-    platform: linux/amd64  # ✅ Add this to fix M1/M2 Mac issues
+    platform: linux/amd64  # ✅ Fix for M1/M2 Mac issues
     container_name: oracledb
     hostname: oracledb
     networks:
@@ -217,6 +217,12 @@ services:
       - ORACLE_CHARACTERSET=AL32UTF8
     volumes:
       - oracledb_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo exit | sqlplus -s SYSTEM/MySecurePassword123@XEPDB1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 #---------------------------------------------------------------------------------------------------------------------
 volumes:
   kafka-data:

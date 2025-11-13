@@ -10,7 +10,7 @@
     "table.blacklist": "",
     "schema.pattern": "SYSTEM",
     "mode": "timestamp+incrementing",
-    "timestamp.column.name": "OFFSET_DATE_TIME",
+    "timestamp.column.name": "CREATED_AT",
     "incrementing.column.name": "ID",
     "topic.prefix": "oracle_events_",
     "poll.interval.ms": 5000,
